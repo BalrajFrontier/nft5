@@ -64,7 +64,7 @@ import AppContext from '../AppContext';
       
       const signMessage = async ({ setError, message }) => {
         try {
-         const accounts = await window.ethereum.send("eth_requestAccounts");
+        // const accounts = await window.ethereum.send("eth_requestAccounts");
           // const provider = new ethers.providers.Web3Provider(window.ethereum);
           // const signer = provider.getSigner();
           
@@ -79,6 +79,7 @@ import AppContext from '../AppContext';
             signature,
           };
         } catch (err) {
+            console.log(error);
           setError(err.message);
         }
       };
@@ -100,6 +101,7 @@ import AppContext from '../AppContext';
                             data: sig?.signature
                         }
                       });
+                      console.log(response);
                 } catch(err) {
                     console.log(err);
                 }

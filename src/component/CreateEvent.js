@@ -7,14 +7,9 @@ import AppContext from '../AppContext';
 function CreateEvent() {
     const [name, setName] = useState('');  
     const [fromDate, setFromDate] = useState('');
-    const [toDate, setToDate] = useState('');  
     const [type, setType] = useState('free'); 
     const [file, setFile] = useState('');
     const [formData, setFormData] = useState('');
-
-    const {
-        walletAddress,
-      } = useContext(AppContext);
 
     useEffect(() => {
         const formData = new FormData();
