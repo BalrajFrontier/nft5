@@ -32,7 +32,7 @@ import AppContext from '../AppContext';
         })();
         }
         return () => mounted = false;
-      },[]);
+      });
 
       useEffect(() => {
             (async () => {
