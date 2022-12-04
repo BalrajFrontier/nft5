@@ -37,12 +37,15 @@ import AppContext from '../AppContext';
 
       useEffect(() => {
             (async () => {
-                const nftDetails =  await getNFTDetails();
-                console.log(nftDetails);
-                setNft(nftDetails);
+                if(walletAddress){
+                    const nftDetails =  await getNFTDetails();
+                    setNft(nftDetails);
+                }
         })();
 
       },[walletAddress]);
+
+      
       const getEvents = async () => {
         const ev =  await axios({
             method: 'get',
@@ -56,7 +59,8 @@ import AppContext from '../AppContext';
             method: 'get',
             url: `https://node-api-eth.herokuapp.com/v1/event/nft-detail?address=${walletAddress}&eventId=${id}`
           });
-          return nftDetails;
+          console.log(nftDetails);
+          return nftDetails?.data;
       }
       
       const signMessage = async ({ setError, message }) => {
@@ -72,7 +76,6 @@ import AppContext from '../AppContext';
           
           // const signature = await signer.signMessage(message);
           // const signature = await web3.eth.personal.sign(hash, accounts[0])
-          console.log(signature);
           return {
             signature,
           };
@@ -127,9 +130,21 @@ import AppContext from '../AppContext';
           </p>
           <p className="mx-auto mt-3 max-w-2xl text-xl text-gray-500 sm:mt-4 flex items-center">
             {
-                nft && (<button onClick = {mintNFT} className="flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50">
+                Object.keys(nft).length === 0 ? (<button onClick = {mintNFT} className="flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50">
                 Mint NFT
-    </button>)
+    </button>) : (
+        <div className="space-y-4">
+        <div className="aspect-w-3 aspect-h-2">
+          <img className="rounded-lg object-cover shadow-lg" src={nft?.logo_url} alt="" />
+        </div>
+
+        <div className="space-y-2">
+          <div className="space-y-1 text-lg font-medium leading-6">
+            <p className="text-indigo-600">{`Token No: ${nft?.token_id}`}</p>
+          </div>
+        </div>
+      </div>
+    )
             }
           </p>
         </div>

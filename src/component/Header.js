@@ -1,4 +1,4 @@
-import {useContext} from 'react';
+import {useContext, useEffect} from 'react';
 import AppContext from '../AppContext';
 
 const navigation = [
@@ -11,12 +11,16 @@ const navigation = [
         walletAddress,
         setWalletAddress
       } = useContext(AppContext);
+      useEffect(() => {
+        const wallet = localStorage.getItem('address');
+        setWalletAddress(wallet);
+  },[]);
     const connectWallet = () => {
         if(window.ethereum){
             console.log(window.ethereum);
             window.ethereum.request({method:'eth_requestAccounts'})
             .then(res=>{
-                    console.log(res);
+                localStorage.setItem('address', res[0]);
                     setWalletAddress(res[0]) 
             })
           }else{
