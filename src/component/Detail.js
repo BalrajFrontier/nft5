@@ -1,6 +1,7 @@
 import {useState, useEffect, useContext} from 'react';
 import {Link, useLocation} from 'react-router-dom';
 import {ethers} from 'ethers';
+import { QrReader } from 'react-qr-reader';
 import web3 from 'web3';
 import axios from 'axios';
 import Header from "./Header";
@@ -12,6 +13,7 @@ import AppContext from '../AppContext';
     const [event, setEvent] = useState([]);
     const [nft, setNft] = useState({});
     const [error, setError] = useState();
+    const [data, setData] = useState('No result');
     const loc = useLocation();
     const ids = loc?.pathname?.split('/');
     const id = ids[ids.length-1];
@@ -84,6 +86,34 @@ import AppContext from '../AppContext';
         }
       };
 
+      const verifyUser = async () => {
+        try{
+            const hex = web3.utils.toHex('ETH INDIA 2022');
+            const message = web3.utils.hexToBytes(hex);
+            const sig = await signMessage({
+              setError,
+              message,
+            });
+            if (sig) {
+                try {
+                    const response = await axios({
+                        method: 'post',
+                        url: `https://node-api-eth.herokuapp.com/v1/event/verify?address=${walletAddress}&eventId=${id}`,
+                        data: {
+                            data: sig?.signature
+                        }
+                      });
+                } catch(err) {
+                    console.log(err);
+                }
+              }
+        }
+        catch(err)
+        {
+            console.log(err);
+        }
+      }
+
       const mintNFT = async () => {
         try{
             const ev =  await axios({
@@ -143,7 +173,11 @@ import AppContext from '../AppContext';
             <p className="text-indigo-600">{`Token No: ${nft?.token_id}`}</p>
           </div>
         </div>
+        <button onClick = {verifyUser} className="flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50">
+                Verify 
+    </button>
       </div>
+      
     )
             }
           </p>
