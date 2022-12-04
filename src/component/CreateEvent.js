@@ -1,10 +1,60 @@
-import react from 'react';
-function CreateEvent() {
-    
+import React, { useState, useEffect, useContext } from 'react';
+import axios from 'axios';
+import Header from './Header';
+import AppContext from '../AppContext';
 
+
+function CreateEvent() {
+    const [name, setName] = useState('');  
+    const [fromDate, setFromDate] = useState('');
+    const [toDate, setToDate] = useState('');  
+    const [type, setType] = useState('free'); 
+    const [file, setFile] = useState('');
+    const [formData, setFormData] = useState('');
+
+    const {
+        walletAddress,
+      } = useContext(AppContext);
+
+    useEffect(() => {
+        const formData = new FormData();
+        const blob = new Blob([JSON.stringify(file, null, 2)], {
+            type: "application/json",
+          });
+        formData.append(
+          "myFile",
+          blob,
+          file.name
+        );
+        setFormData(formData);
+      }, [file]);
+
+
+      const submitForm = async (e) =>{
+        console.log(formData);
+        e.preventDefault();
+        const event = {
+            name,
+            date: fromDate,
+            location: 'Bengaluru',
+            event_type: type
+        }
+        try {
+            const response = await axios({
+                method: 'post',
+                url: 'https://rails-admin-api.herokuapp.com/events',
+                data: {event}
+              });
+              console.log(response);
+        } catch(err) {
+            console.log(err);
+        }
+      }
+    
     return (
         <>
-          <div className="container mx-auto">
+        <Header/>
+          <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="md:grid  md:gap-6">
               <div className="mt-5 md:col-span-2 md:mt-0">
                 <form>
@@ -16,15 +66,14 @@ function CreateEvent() {
                             Name
                           </label>
                           <div className="mt-1 flex rounded-md shadow-sm">
-                            {/* <span className="inline-flex items-center rounded-l-md border border-r-1 border-gray-300 bg-gray-50 px-3 text-sm text-gray-500">
-                              http://
-                            </span> */}
                             <input
                               type="text"
                               name="company-website"
                               id="company-website"
                               className="block w-full flex-1 rounded-none rounded-r-0 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                               placeholder="..."
+                              value={name}
+                              onChange={(e)=>{setName(e.target.value)}}
                             />
                           </div>
                         </div>
@@ -33,7 +82,7 @@ function CreateEvent() {
                       <div className="grid grid-cols-3 gap-6">
                         <div className="col-span-3 sm:col-span-2">
                           <label htmlFor="company-website" className="block text-sm font-medium text-gray-700">
-                            From date
+                            Date
                           </label>
                           <div className="mt-1 flex rounded-md shadow-sm">
                           <input
@@ -42,11 +91,13 @@ function CreateEvent() {
                               id="company-website"
                               className="block w-full flex-1 rounded-none rounded-r-0 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                               placeholder=""
+                              value={fromDate}
+                              onChange={(e)=>{setFromDate(e.target.value)}}
                             />
                           </div>
                         </div>
                       </div>
-                      <div className="grid grid-cols-3 gap-6">
+                      {/* <div className="grid grid-cols-3 gap-6">
                         <div className="col-span-3 sm:col-span-2">
                           <label htmlFor="company-website" className="block text-sm font-medium text-gray-700">
                             To date
@@ -58,10 +109,12 @@ function CreateEvent() {
                               id="company-website"
                               className="block w-full flex-1 rounded-none rounded-r-0 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                               placeholder=""
+                              value={toDate}
+                              onChange={(e)=>{setToDate(e.target.value)}}
                             />
                           </div>
                         </div>
-                      </div>
+                      </div> */}
 
                       <div className="grid grid-cols-3 gap-6">
                       <fieldset>
@@ -74,6 +127,9 @@ function CreateEvent() {
                           name="push-notifications"
                           type="radio"
                           className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                          value={type}
+                          onChange={(e)=>{setType('free')}}
+                          checked = {type === 'free'}
                         />
                         <label htmlFor="push-everything" className="ml-3 block text-sm font-medium text-gray-700">
                           Free
@@ -85,6 +141,9 @@ function CreateEvent() {
                           name="push-notifications"
                           type="radio"
                           className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                          value={type}
+                          onChange={(e)=>{setType('paid')}}
+                          checked = {type === 'paid'}
                         />
                         <label htmlFor="push-email" className="ml-3 block text-sm font-medium text-gray-700">
                           Paid
@@ -93,26 +152,6 @@ function CreateEvent() {
                     </div>
                   </fieldset>
                       </div>
-
-                      {/* <div>
-                        <label htmlFor="about" className="block text-sm font-medium text-gray-700">
-                          About
-                        </label>
-                        <div className="mt-1">
-                          <textarea
-                            id="about"
-                            name="about"
-                            rows={3}
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                            placeholder="you@example.com"
-                            defaultValue={''}
-                          />
-                        </div>
-                        <p className="mt-2 text-sm text-gray-500">
-                          Brief description for your profile. URLs are hyperlinked.
-                        </p>
-                      </div> */}
-    
                       <div>
                         <label className="block text-sm font-medium text-gray-700">Mint Image</label>
                         <div className="mt-1 flex justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6">
@@ -137,7 +176,7 @@ function CreateEvent() {
                                 className="relative cursor-pointer rounded-md bg-white font-medium text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:text-indigo-500"
                               >
                                 <span>Upload a file</span>
-                                <input id="file-upload" name="file-upload" type="file" className="sr-only" />
+                                <input id="file-upload" name="file-upload" type="file" className="sr-only" onChange={(e)=>{setFile(e.target.files[0])}}/>
                               </label>
                             </div>
                             <p className="text-xs text-gray-500">PNG, JPG up to 1MB</p>
@@ -147,10 +186,11 @@ function CreateEvent() {
                     </div>
                     <div className="bg-gray-50 px-4 py-3 text-right sm:px-6">
                       <button
-                        type="submit"
+                        type="button"
                         className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                      onClick = {(e) => {submitForm(e)}}
                       >
-                        Save
+                        Create
                       </button>
                     </div>
                   </div>
