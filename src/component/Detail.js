@@ -1,7 +1,5 @@
 import {useState, useEffect, useContext} from 'react';
-import {Link, useLocation} from 'react-router-dom';
-import {ethers} from 'ethers';
-import { QrReader } from 'react-qr-reader';
+import { useLocation} from 'react-router-dom';
 import web3 from 'web3';
 import axios from 'axios';
 import Header from "./Header";
@@ -13,7 +11,6 @@ import AppContext from '../AppContext';
     const [event, setEvent] = useState([]);
     const [nft, setNft] = useState({});
     const [error, setError] = useState();
-    const [data, setData] = useState('No result');
     const loc = useLocation();
     const ids = loc?.pathname?.split('/');
     const id = ids[ids.length-1];

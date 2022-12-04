@@ -1,9 +1,7 @@
-import ReactDOM from 'react-dom/client';
 import React, {useState, createContext} from 'react';
 import {
   createBrowserRouter,
   RouterProvider,
-  Route,
 } from "react-router-dom";
 import CreateEvent from './component/CreateEvent';
 import AppContext from './AppContext';
