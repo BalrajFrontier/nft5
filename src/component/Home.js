@@ -12,6 +12,7 @@ import Header from "./Header";
         if(mounted) {
             (async () => {
             const eve = await getEvents();
+            console.log(eve);
             setEvents(eve?.data);
         })();
         }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Header from './Header';
+import { redirect } from "react-router-dom";
 
 
 function CreateEvent() {
@@ -37,8 +38,10 @@ function CreateEvent() {
             const response = await axios({
                 method: 'post',
                 url: 'https://rails-admin-api.herokuapp.com/events',
-                data: {event}
+                data: event
               });
+              redirect("/");
+              window.location.href = '/';
               console.log(response);
         } catch(err) {
             console.log(err);
